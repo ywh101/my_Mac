@@ -1,0 +1,107 @@
+set nocompatible
+set relativenumber number
+set encoding=utf8
+filetype off
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+Plugin 'VundleVim/Vundle.vim'
+
+Plugin 'scrooloose/nerdtree'	"A file system explorer
+Plugin 'w0rp/ale'		"syntax test Asynchronous
+Plugin 'jiangmiao/auto-pairs'
+"insert or delete brackets, parens, quotes in pair
+
+Plugin 'mhinz/vim-startify'		"the fancy start screen for vim
+Plugin 'majutsushi/tagbar'		"folding show including class, function ans so on
+Plugin 'scrooloose/nerdcommenter'	"quick comment
+Plugin 'vim-airline/vim-airline'	"good line as air
+
+
+call vundle#end()
+
+filetype plugin indent on
+let g:tarbar_ctags_bin = 'ctags'
+let g:tagbar_left = 1
+let g:tagbar_width = 30
+let g:tagbar_autofocus = 1
+let g:tagbar_sort = 0
+let g:NERDSpaceDelims = 1
+
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_enter = 0
+let g:ale_linters = {	'c++': ['clang'], 'c': ['clang'], 'python': ['flake8'], }
+let g:ale_sign_error = '✗'
+let g:ale_sign_warning = '⚡'
+
+
+
+set history=2000
+set scrolloff=7
+set softtabstop=4
+set shiftwidth=4
+
+set smartcase
+set ignorecase
+set hlsearch
+set incsearch
+set showmatch
+set showcmd
+set ruler
+set mouse=a
+
+set smartindent
+set smarttab
+set nu
+set magic
+set autoindent
+set tabstop=4
+
+"set cursorcolumn
+"set cursorline
+
+syntax enable
+syntax on
+
+
+
+"to declare the authority
+map <F4> :call TitleDet()<cr>
+"add the header
+function AddTitle()
+    call append(0,"# =================******========================")
+    call append(1,"# Copyright ")
+    call append(2,"")
+    call append(3,"# Author: Yao Wenhua")
+    call append(4,"# Mail: yaowenhua101@hotmail.com")
+    call append(5,"# Create Time:".strftime("%Y-%m-%d %H:%M"))
+    call append(6,"# Last Modified: ".strftime("%Y-%m-%d %H:%M"))
+    call append(7,"# Filename:\t".expand("%:t"))
+    call append(8,"# =================******========================")
+    call append(9,"")
+    echohl WarningMsg | echo "Successful in adding the copyright." | echohl None
+endf
+"update the modified time and the file's name
+function UpdateTitle()
+	normal m'
+    execute '/# *Last Modified:/s@:.*$@\=strftime(": %Y-%m-%d %H:%M")@'
+    normal ''
+	normal mk
+    execute '/# *Filename:/s@:.*$@\=":\t".expand("%:t")@'
+    execute "noh"
+    normal 'k
+    echohl WarningMsg | echo "Successful in updating the copy right." | echohl None
+endfunction
+"start the three function
+function TitleDet()
+    let n=1
+    while n < 10
+        let line = getline(n)
+        if line =~ '^\#\s*\S*Last\sModified:\S*.*$'
+            call UpdateTitle()
+            return
+        endif
+        let n = n + 1
+    endwhile
+    call AddTitle()
+endfunction
