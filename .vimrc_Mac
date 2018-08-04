@@ -65,20 +65,25 @@ syntax on
 
 
 
+"autostart the header
+autocmd BufNewFile * exec ":call TitleDet()"
 "to declare the authority
 map <F4> :call TitleDet()<cr>
 "add the header
 function AddTitle()
-    call append(0,"# =================******========================")
-    call append(1,"# Copyright ")
-    call append(2,"")
-    call append(3,"# Author: Yao Wenhua")
-    call append(4,"# Mail: yaowenhua101@hotmail.com")
-    call append(5,"# Create Time:".strftime("%Y-%m-%d %H:%M"))
-    call append(6,"# Last Modified: ".strftime("%Y-%m-%d %H:%M"))
-    call append(7,"# Filename:\t".expand("%:t"))
-    call append(8,"# =================******========================")
-    call append(9,"")
+	call append(0,"#!/usr/bin/env python")
+    call append(1,"")
+    call append(2,"# =================******========================")
+    call append(3,"# Copyright (C) 2018 Yao Wenhua. All rights reserved.")
+    call append(4,"# Press Fn+F4 to update the time to modify and the name of file.")
+    call append(5,"")
+    call append(6,"# Author: Yao Wenhua")
+    call append(7,"# Mail: yaowenhua101@hotmail.com")
+    call append(8,"# Create Time:".strftime("%Y-%m-%d %H:%M"))
+    call append(9,"# Last Modified: ".strftime("%Y-%m-%d %H:%M"))
+    call append(10,"# Filename:\t".expand("%:t"))
+    call append(11,"# =================******========================")
+    call append(12,"")
     echohl WarningMsg | echo "Successful in adding the copyright." | echohl None
 endf
 "update the modified time and the file's name
