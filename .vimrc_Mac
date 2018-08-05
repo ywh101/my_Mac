@@ -47,8 +47,8 @@ set hlsearch
 set incsearch
 set showmatch
 set showcmd
-set ruler
-set mouse=a
+"set ruler
+"set mouse=a
 
 set smartindent
 set smarttab
@@ -66,47 +66,66 @@ syntax on
 
 
 "autostart the header
-autocmd BufNewFile * exec ":call TitleDet()"
+autocmd BufNewFile * exec ":call AddAuthor()"
 "to declare the authority
-map <F4> :call TitleDet()<cr>
-"add the header
-function AddTitle()
-	call append(0,"#!/usr/bin/env python")
-    call append(1,"")
-    call append(2,"# =================******========================")
-    call append(3,"# Copyright (C) 2018 Yao Wenhua. All rights reserved.")
-    call append(4,"# Press Fn+F4 to update the time to modify and the name of file.")
-    call append(5,"")
-    call append(6,"# Author: Yao Wenhua")
-    call append(7,"# Mail: yaowenhua101@hotmail.com")
-    call append(8,"# Create Time:".strftime("%Y-%m-%d %H:%M"))
-    call append(9,"# Last Modified: ".strftime("%Y-%m-%d %H:%M"))
-    call append(10,"# Filename:\t".expand("%:t"))
-    call append(11,"# =================******========================")
-    call append(12,"")
-    echohl WarningMsg | echo "Successful in adding the copyright." | echohl None
-endf
-"update the modified time and the file's name
-function UpdateTitle()
-	normal m'
-    execute '/# *Last Modified:/s@:.*$@\=strftime(": %Y-%m-%d %H:%M")@'
-    normal ''
-	normal mk
-    execute '/# *Filename:/s@:.*$@\=":\t".expand("%:t")@'
-    execute "noh"
-    normal 'k
-    echohl WarningMsg | echo "Successful in updating the copy right." | echohl None
-endfunction
-"start the three function
-function TitleDet()
+map <F4> ms:call AddAuthor()<cr>`s
+
+function AddAuthor()
     let n=1
-    while n < 10
+    while n < 11
         let line = getline(n)
-        if line =~ '^\#\s*\S*Last\sModified:\S*.*$'
-            call UpdateTitle()
-            return
-        endif
-        let n = n + 1
+        if line=~'[#]*\s*\*\s*\S*Last\s*modified\s*:\s*\S*.*$'
+        call UpdateTitle()
+        return
+    endif
+    let n = n + 1
     endwhile
-    call AddTitle()
+    if &filetype == 'sh'
+        call AddTitleForShell()
+    elseif &filetype == 'python'
+        call AddTitleForPython()
+    endif
+ 
+endfunction
+ 
+"add comment for Python
+function AddTitleForPython()
+    call append(0,"#!/usr/bin/env python")
+    call append(1,"")
+    call append(2,"# ===================*********=========================")
+    call append(3,"# * Author        : Yao Wenhua")
+    call append(4,"# * Email         : yaowenhua101@hotmail.com")
+    call append(5,"# * Create time   : ".strftime("%Y-%m-%d %H:%M"))
+    call append(6,"# * Last modified : ".strftime("%Y-%m-%d %H:%M"))
+    call append(7,"# * Filename      : ".expand("%:t"))
+    call append(8,"# * Description   : ")
+    call append(9,"# ===================*********=========================")
+    call append(10,"")
+    echohl WarningMsg | echo "Successful in adding the copyright." | echohl None
+endfunction
+
+"add conment for shell
+function AddTitleForShell()
+    call append(0,"#!/bin/bash")
+    call append(1,"")
+    call append(2,"# ===================*********=========================")
+    call append(3,"# * Author        : Yao Wenhua")
+    call append(4,"# * Email         : yaowenhua101@hotmail.com")
+    call append(5,"# * Create time   : ".strftime("%Y-%m-%d %H:%M"))
+    call append(6,"# * Last modified : ".strftime("%Y-%m-%d %H:%M"))
+    call append(7,"# * Filename      : ".expand("%:t"))
+    call append(8,"# * Description   : ")
+    call append(9,"# ===================*********=========================")
+    call append(10,"")
+endfunction
+
+function UpdateTitle()
+        normal m'
+        execute '/* Last modified\s*:/s@:.*$@\=strftime(": %Y-%m-%d %H:%M")@'
+        normal "
+        normal mk
+        execute '/* Filename\s*:/s@:.*$@\=": ".expand("%:t")@'
+        execute "noh"
+        normal 'k
+        echohl WarningMsg | echo "Successful in updating the copy right." | echohl None
 endfunction
